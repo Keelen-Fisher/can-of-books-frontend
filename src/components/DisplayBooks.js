@@ -21,5 +21,4 @@ class DisplayBooks extends React.Component {
   }
 }
 
-
 export default DisplayBooks;
