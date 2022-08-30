@@ -7,7 +7,7 @@ class About extends Component {
     <>
     {/* Todo: implement about info for both developers */}
 
-     <p>Project Developed by: Rober Ball and Keelen Fisher</p>
+     <p>Project Developed by: Robert Ball and Keelen Fisher</p>
     </>
     );
   }
