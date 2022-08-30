@@ -35,18 +35,6 @@ class BestBooks extends React.Component {
 
   render() {
 
-    /* TODO: render all the books in a Carousel */
-    // let carouselItems = this.state.books.map((info, index) => (
-    // <Carousel>
-    {/* <Carousel.Item> */ }
-    {/* <Carousel.Caption > */ }
-    {/* <h3>{info.title}</h3> */ }
-    {/* <p>{info.description}</p> */ }
-    {/* <p>{info.status}</p> */ }
-    {/* </Carousel.Caption> */ }
-    {/* </Carousel.Item> */ }
-    {/* </Carousel> */ }
-    // ));
 
     return (
       <>
@@ -73,10 +61,6 @@ class BestBooks extends React.Component {
         }
 
       </>
-      // <p>Book Carousel coming soon</p>
-      // ) : (
-      // <h3>No Books Found :(</h3>
-      // )}
     )
   }
 }
