@@ -3,6 +3,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import { Modal } from "react-bootstrap";
 
 const booksURL = `${process.env.REACT_APP_SERVER}`;
 
@@ -39,26 +40,40 @@ class BookFormModal extends React.Component {
     })
     }
 
-  render () {
-
-    return(
-      <Form onSubmit={this.handleBookSubmit}>
-      <Form.Group className="mb-3" controlId="formTitle">
-        <Form.Label>Title</Form.Label>
-        <Form.Control type="title" placeholder="Enter Book Title" />
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="formDescription">
-        <Form.Label>Description</Form.Label>
-        <Form.Control type="name" placeholder="Enter Book Description" />
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="formStatus">
-        <Form.Label>Status</Form.Label>
-        <Form.Control type="name" placeholder="Enter Book Status" />
-      </Form.Group>
-      <Button variant="primary" type="submit">
-        Submit
-      </Button>
-    </Form>
+    show = () => this.setState({ show: true })
+    handleClose = () => {
+      this.setState({ show: false })
+    }
+  
+    helper = (e) => {
+      this.props.handlePost(e);
+      this.handleClose();
+    }
+  
+    render() {
+      return (
+        <>
+          <Button onClick={this.show}>Add a Book</Button>
+          <Modal show={this.state.show} onHide={this.handleClose}>
+            <Form onSubmit={this.handleBookSubmit}>
+              <Form.Group className="mb-3" controlId="formTitle">
+                <Form.Label>Title</Form.Label>
+                <Form.Control type="title" placeholder="Enter Book Title" />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formDescription">
+                <Form.Label>Description</Form.Label>
+                <Form.Control type="name" placeholder="Enter Book Description" />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formStatus">
+                <Form.Label>Status</Form.Label>
+                <Form.Control type="name" placeholder="Enter Book Status" />
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </Form>
+          </Modal>
+        </>
     );
   }
 }
