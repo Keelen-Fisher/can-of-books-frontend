@@ -1,113 +1,145 @@
 import React from 'react';
-import Carousel from 'react-bootstrap/Carousel';
-import axios from 'axios';
-import DisplayBooks from './DisplayBooks.js';
-import BookFormModal from './BookFormModal.js'
-// import BookAddModal from './BookAddModal'
-
-const booksURL = `${process.env.REACT_APP_SERVER}`;
-
+import axios from "axios";
+import { Button, Carousel } from "react-bootstrap";
+import BookFormModal from "./BookFormModal"
+import EditForm from './UpdateBook';
 
 class BestBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      books: []
+      books: [],
+      show: false,
+      showUpdateForm: false,
+      selectedBook: null,
+    };
+  }
+
+  addBooks = async (event) => {
+    event.preventDefault()
+    this.hideModal()
+    let book = {
+      title: event.target.title.value,
+      description: event.target.description.value,
+      status: event.target.status.value,
+    }
+    try {
+      let response = await axios.post(`${process.env.REACT_APP_SERVER}/books`, book)
+      let newBook = response.data
+      this.setState({
+        books: [...this.state.books, newBook]
+      });
+    } catch (error) {
+      console.log('error posting', error)
     }
   }
+
+  getBooks = async () => {
+    try {
+      let bookData = await axios.get(`${process.env.REACT_APP_SERVER}/books`);
+
+      this.setState({ books: bookData.data });
+    } catch (error) {
+      console.log("Error retrieving books: ", error.response);
+    }
+
+  };
 
   componentDidMount() {
     this.getBooks();
+  }
+
+  showModal = () => {
+    this.setState({
+      show: true
+    })
+  }
+
+  hideModal = () => {
+    this.setState({
+      show: false
+    })
+  }
+  deleteBook = async (bookId) => {
+    try {
+      await axios.delete(`${process.env.REACT_APP_SERVER}/books/${bookId}`);
+      let newBooks = this.state.books.filter((value, index) => {
+        if (value._id === bookId) {
+          return false;
+        } else { return true; }
+      })
+      this.setState({
+        books: newBooks,
+      })
+    } catch (error) {
+      console.log('error deleting', error)
+    }
 
   }
 
-  getBooks = async() => {
+  updateBooks = async (bookToUpdate) => {
     try {
-      let bookData = await axios.get(`${booksURL}/books`);
+      let url = `${process.env.REACT_APP_SERVER}/books/${bookToUpdate._id}`;
+      let updatedBook = await axios.put(url, bookToUpdate);
+
+      let updatedBookArray = this.state.books.map(existingBook => {
+        return existingBook._id === bookToUpdate._id
+          ? updatedBook.data
+          : existingBook
+      });
       this.setState({
-        books: bookData.data
-      })
+        books: updatedBookArray,
+      });
     } catch (error) {
-      console.log('we have an error: ', error.response);
+      console.log('error deleting', error)
     }
   }
 
-handleBookDelete = async (bookToDelete) =>{
-  try {
-    const response = await axios.delete(`${booksURL}/books/${bookToDelete._id}`);
-    console.log(response.status);
-    const filteredBooks = this.state.books.filter(book => {
-      return book._id !== bookToDelete._id
-    })
+  setBook = function (book) {
     this.setState({
-      books: filteredBooks
+      selectedBook: book,
+      showUpdateForm: true,
     })
-
-    console.log()
-  } catch (error) {
-    console.log(error);
   }
-}
-
-updateBooks = async (bookToUpdate) => {
-  try{
-    let url = `${booksURL}/books/${bookToUpdate._id}`
-    let updatedBook = await axios.put(url, bookToUpdate);
-
-    let updatedBookArray = this.state.books.map(existingBook => {
-      return existingBook._id === bookToUpdate._id
-      ? updatedBook.data
-      : existingBook
-    });
-
-    this.setState({
-      books: updatedBookArray
-    });
-
-  }catch(error){
-    console.log('we have an error in updateBooks: ', error.response);
-  }
-}
 
   render() {
-    console.log(this.state.books);
-    let books = this.state.books.map(books => (
-      <>
-      <p key={books._id}>{books.title} is one of my faviorite books</p>
-      <button onClick={() => this.handleBookDelete(books)}>Remove from database?</button>
-      <button onClick={() => this.updateBooks(books)}>Update Book?</button>
-      </>
-    ))
-
+    let books = this.state.books.map((value, index) => {
+      return (
+        <Carousel.Item bg-dark>
+          <img
+            src='https://upload.wikimedia.org/wikipedia/commons/e/e4/Interior_view_of_Stockholm_Public_Library.jpg'
+            alt='Placeholder'
+            style={{ width: '100%', }}
+          />
+          <Carousel.Caption >
+            <h3>{value.title}</h3>
+            <p>{value.description}</p>
+            <p>{value.status}</p>
+            <Button onClick={() => this.deleteBook(value._id)}>Delete</Button>
+            <Button onClick={() => this.setBook(value)} >Update Book</Button>
+          </Carousel.Caption>
+        </Carousel.Item>
+      )
+    })
     return (
       <>
-
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
-        <BookFormModal />
-        <BookFormModal />
-        <div>{books}</div>
-        {this.state.books.length ? (
-          <Carousel>
-            {this.state.books.map((book) => {
-              return (
-                <Carousel.Item key={book._id}>
-                  <DisplayBooks
-                    title={book.title}
-                    description={book.description}
-                    status={book.status}>
-                  </DisplayBooks>
-                </Carousel.Item>
-              );
-            })
-            }
-          </Carousel>)
-          :
-          (<h3>Sorry, no books found!</h3>)
+        <Button onClick={this.showModal}>Add a book</Button>
+        <BookFormModal addBooks={this.addBooks} show={this.state.show} onHide={this.hideModal} />
+        {this.state.selectedBook &&
+          <EditForm book={this.state.selectedBook} updateBooks={this.updateBooks} />
         }
-
+        {this.state.books.length ? (
+          <Carousel className="w-50">
+            {books}
+          </Carousel>
+        ) : (
+          <h3>No Books Found :(</h3>
+        )}
       </>
-    )
+    );
   }
 }
 
 export default BestBooks;
+
