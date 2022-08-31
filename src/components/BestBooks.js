@@ -3,6 +3,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import axios from 'axios';
 import DisplayBooks from './DisplayBooks.js';
 import BookFormModal from './BookFormModal.js'
+// import BookAddModal from './BookAddModal'
 
 const booksURL = `${process.env.REACT_APP_SERVER}`;
 
@@ -48,12 +49,33 @@ handleBookDelete = async (bookToDelete) =>{
   }
 }
 
+updateBooks = async (bookToUpdate) => {
+  try{
+    let url = `${booksURL}/books/${bookToUpdate._id}`
+    let updatedBook = await axios.put(url, bookToUpdate);
+
+    let updatedBookArray = this.state.books.map(existingBook => {
+      return existingBook._id === bookToUpdate._id
+      ? updatedBook.data
+      : existingBook
+    });
+
+    this.setState({
+      books: updatedBookArray
+    });
+
+  }catch(error){
+    console.log('we have an error in updateBooks: ', error.response);
+  }
+}
+
   render() {
     console.log(this.state.books);
     let books = this.state.books.map(books => (
       <>
       <p key={books._id}>{books.title} is one of my faviorite books</p>
       <button onClick={() => this.handleBookDelete(books)}>Remove from database?</button>
+      <button onClick={() => this.updateBooks(books)}>Update Book?</button>
       </>
     ))
 
@@ -61,6 +83,7 @@ handleBookDelete = async (bookToDelete) =>{
       <>
 
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
+        <BookFormModal />
         <BookFormModal />
         <div>{books}</div>
         {this.state.books.length ? (
