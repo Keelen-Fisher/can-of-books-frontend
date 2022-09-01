@@ -3,6 +3,7 @@ import axios from "axios";
 import { Button, Carousel } from "react-bootstrap";
 import BookFormModal from "./BookFormModal"
 import EditForm from './UpdateBook';
+import '../Styles/Styles.css'
 
 class BestBooks extends React.Component {
   constructor(props) {
@@ -71,6 +72,7 @@ class BestBooks extends React.Component {
       this.setState({
         books: newBooks,
       })
+      
     } catch (error) {
       console.log('error deleting', error)
     }
@@ -105,18 +107,18 @@ class BestBooks extends React.Component {
   render() {
     let books = this.state.books.map((value, index) => {
       return (
-        <Carousel.Item bg-dark>
+        <Carousel.Item className='carouselItem'>
           <img
             src='https://upload.wikimedia.org/wikipedia/commons/e/e4/Interior_view_of_Stockholm_Public_Library.jpg'
             alt='Placeholder'
-            style={{ width: '100%', }}
+            style={{ maxHeight: '1000px'}}
           />
-          <Carousel.Caption >
-            <h3>{value.title}</h3>
+          <Carousel.Caption key={index} style={{ marginBottom: '400px', backgroundColor: 'rgba(32, 31, 32, 0.85)', border: 'solid black 2px', borderRadius: '10px', boxShadow: 'rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px'}}>
+            <h3 style={{fontSize: '4rem'}}>{value.title}</h3>
             <p>{value.description}</p>
             <p>{value.status}</p>
-            <Button onClick={() => this.deleteBook(value._id)}>Delete</Button>
-            <Button onClick={() => this.setBook(value)} >Update Book</Button>
+            <Button style={{ margin: 'auto', width: '120px', backgroundColor: 'rgba(32, 31, 32, 0.85)', border: 'solid red 2px' }} onClick={() => this.deleteBook(value._id)}>Delete</Button>
+            <Button style={{ marginLeft: '3rem', width: '120px', backgroundColor: 'rgba(32, 31, 32, 0.85)' , border: 'solid green 2px'   }} onClick={() => this.setBook(value)} >Update Book</Button>
           </Carousel.Caption>
         </Carousel.Item>
       )
@@ -124,17 +126,17 @@ class BestBooks extends React.Component {
     return (
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
-        <Button onClick={this.showModal}>Add a book</Button>
+        <Button style={{ marginLeft: '3rem', width: '120px', backgroundColor: 'green' , border: 'solid green 2px'   }} onClick={this.showModal}>Add a book</Button>
         <BookFormModal addBooks={this.addBooks} show={this.state.show} onHide={this.hideModal} />
         {this.state.selectedBook &&
           <EditForm book={this.state.selectedBook} updateBooks={this.updateBooks} />
         }
         {this.state.books.length ? (
-          <Carousel className="w-50">
+          <Carousel className="w-100">
             {books}
           </Carousel>
         ) : (
-          <h3>No Books Found :(</h3>
+          <h3>No Books Found</h3>
         )}
       </>
     );
