@@ -111,9 +111,9 @@ class BestBooks extends React.Component {
           <img
             src='https://upload.wikimedia.org/wikipedia/commons/e/e4/Interior_view_of_Stockholm_Public_Library.jpg'
             alt='Placeholder'
-            style={{ maxHeight: '1000px'}}
+            style={{ width: '100%'}}
           />
-          <Carousel.Caption key={index} style={{ marginBottom: '400px', backgroundColor: 'rgba(32, 31, 32, 0.85)', border: 'solid black 2px', borderRadius: '10px', boxShadow: 'rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px'}}>
+          <Carousel.Caption key={index} style={{ marginBottom: '500px', marginRight: 'auto', marginLeft: 'auto', backgroundColor: 'rgba(32, 31, 32, 0.85)', border: 'solid black 2px', borderRadius: '10px', boxShadow: 'rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px', width: '50%'}}>
             <h3 style={{fontSize: '4rem'}}>{value.title}</h3>
             <p>{value.description}</p>
             <p>{value.status}</p>
