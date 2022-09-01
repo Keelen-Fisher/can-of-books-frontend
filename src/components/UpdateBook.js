@@ -31,7 +31,7 @@ class UpdateBook extends Component {
           <FormGroup controlId="status">
             <FormLabel> Have you read this book?</FormLabel>
             <FormControl type="text" placeholder="Yes...No...In Progress" />
-            <Button variant="primary" type="submit">Submit</Button>
+            <Button variant="primary" type="submit" onClick={this.props.hide}>Submit</Button>
           </FormGroup>
         </Form>
       </Container>
