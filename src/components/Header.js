@@ -12,6 +12,6 @@ class Header extends React.Component {
       </Navbar>
     )
   }
-}
-
-export default Header;
+  }
+  
+  export default Header;
